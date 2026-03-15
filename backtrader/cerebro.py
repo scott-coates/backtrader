@@ -1559,8 +1559,12 @@ class Cerebro(with_metaclass(MetaParams, object)):
                 if onlyresample or noresample:
                     dt0 = min((d for d in dts if d is not None))
                 else:
-                    dt0 = min((d for i, d in enumerate(dts)
-                               if d is not None and i not in rsonly))
+                    # scott change - this occurs after market hours finish. I think the problem is that the resampled data pushes a tick in its own 15min bucket the main data feed is empty due to market close.
+                    try:
+                        dt0 = min((d for i, d in enumerate(dts)
+                                   if d is not None and i not in rsonly))
+                    except ValueError:
+                        continue
 
                 dmaster = datas[dts.index(dt0)]  # and timemaster
                 self._dtmaster = dmaster.num2date(dt0)
