@@ -1560,6 +1560,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
                     dt0 = min((d for d in dts if d is not None))
                 else:
                     # scott change - this occurs after market hours finish. I think the problem is that the resampled data pushes a tick in its own 15min bucket the main data feed is empty due to market close.
+                    # possibly related to https://github.com/mementum/backtrader/pull/467
                     try:
                         dt0 = min((d for i, d in enumerate(dts)
                                    if d is not None and i not in rsonly))
