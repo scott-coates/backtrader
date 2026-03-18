@@ -20,6 +20,8 @@
 ###############################################################################
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
+import logging
+logger = logging.getLogger(__name__)
 
 import datetime
 import collections
@@ -1565,6 +1567,7 @@ class Cerebro(with_metaclass(MetaParams, object)):
                         dt0 = min((d for i, d in enumerate(dts)
                                    if d is not None and i not in rsonly))
                     except ValueError:
+                        logger.warning(f'Error finding minimum datetime among {dts} with rsonly {rsonly}')
                         continue
 
                 dmaster = datas[dts.index(dt0)]  # and timemaster
