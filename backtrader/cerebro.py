@@ -1546,7 +1546,10 @@ class Cerebro(with_metaclass(MetaParams, object)):
             for d in datas:
                 qlapse = datetime.datetime.utcnow() - qstart
                 d.do_qcheck(newqcheck, qlapse.total_seconds())
-                drets.append(d.next(ticks=False))
+                ret = d.next(ticks=False)
+                # SCOTT DEBUG: LOG WHICH FEED RETURNS WHAT
+                logger.debug(f"SCOTT DEBUG: {d._name} d.next(ticks=False) returned {ret}")
+                drets.append(ret)
 
             d0ret = any((dret for dret in drets))
             if not d0ret and any((dret is None for dret in drets)):
@@ -1606,6 +1609,8 @@ class Cerebro(with_metaclass(MetaParams, object)):
                         # self._plotfillers2[i].append(slen)  # mark as fill
 
             elif d0ret is None:
+                # SCOTT DEBUG: LOG WHEN ALL FEEDS RETURN NONE OR FALSE
+                logger.debug(f"SCOTT DEBUG: d0ret is None branch. all drets: {drets}")
                 # meant for things like live feeds which may not produce a bar
                 # at the moment but need the loop to run for notifications and
                 # getting resample and others to produce timely bars
@@ -1638,6 +1643,8 @@ class Cerebro(with_metaclass(MetaParams, object)):
                 return
 
             if d0ret or lastret:  # bars produced by data or filters
+                # SCOTT DEBUG: LOG BEFORE STRATEGY EXECUTES
+                logger.debug(f"SCOTT DEBUG: Loop reached strat._next() with d0ret={d0ret}, lastret={lastret}")
                 self._check_timers(runstrats, dt0, cheat=False)
                 for strat in runstrats:
                     strat._next()
