@@ -1570,8 +1570,10 @@ class Cerebro(with_metaclass(MetaParams, object)):
                         dt0 = min((d for i, d in enumerate(dts)
                                    if d is not None and i not in rsonly))
                     except ValueError:
+                        # resampled feeds are not allowed to be the master unless there is no normal master at all
                         logger.warning(f'Error finding minimum datetime among {dts} with rsonly {rsonly}')
-                        continue
+                        dt0 = min((d for d in dts if d is not None))
+
 
                 dmaster = datas[dts.index(dt0)]  # and timemaster
                 self._dtmaster = dmaster.num2date(dt0)
