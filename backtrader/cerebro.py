@@ -1532,12 +1532,15 @@ class Cerebro(with_metaclass(MetaParams, object)):
             lastret = False
             # Notify anything from the store even before moving datas
             # because datas may not move due to an error reported by the store
+            logger.debug("SCOTT DEBUG: about to call _storenotify()")
             self._storenotify()
             if self._event_stop:  # stop if requested
                 return
+            logger.debug("SCOTT DEBUG: about to call _datanotify()")
             self._datanotify()
             if self._event_stop:  # stop if requested
                 return
+            logger.debug("SCOTT DEBUG: _datanotify() returned, proceeding to d.next() loop")
 
             # record starting time and tell feeds to discount the elapsed time
             # from the qcheck value
@@ -1650,10 +1653,12 @@ class Cerebro(with_metaclass(MetaParams, object)):
                 self._check_timers(runstrats, dt0, cheat=False)
                 for strat in runstrats:
                     strat._next()
+                    logger.debug(f"SCOTT DEBUG: strat._next() returned for {strat}")
                     if self._event_stop:  # stop if requested
                         return
 
                     self._next_writers(runstrats)
+                    logger.debug(f"SCOTT DEBUG: self._next_writers() returned for {strat}")
 
         # Last notification chance before stopping
         self._datanotify()
